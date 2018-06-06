@@ -225,7 +225,6 @@ def followed_by(username):
 
 
 @main.route('/all')
-@login_required
 def show_all():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', '', max_age=30*24*60*60)
@@ -233,7 +232,6 @@ def show_all():
 
 
 @main.route('/python')
-@login_required
 def show_python():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'python', max_age=30*24*60*60)
@@ -241,7 +239,6 @@ def show_python():
 
 
 @main.route('/golang')
-@login_required
 def show_golang():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'golang', max_age=30*24*60*60)
@@ -249,7 +246,6 @@ def show_golang():
 
 
 @main.route('/nodejs')
-@login_required
 def show_nodejs():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'nodejs', max_age=30*24*60*60)
@@ -257,7 +253,6 @@ def show_nodejs():
 
 
 @main.route('/bk')
-@login_required
 def show_bk():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'bk', max_age=30*24*60*60)
@@ -265,7 +260,6 @@ def show_bk():
 
 
 @main.route('/cloud')
-@login_required
 def show_cloud():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'cloud', max_age=30*24*60*60)
@@ -273,7 +267,6 @@ def show_cloud():
 
 
 @main.route('/deploy')
-@login_required
 def show_deploy():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'deploy', max_age=30*24*60*60)
@@ -281,7 +274,6 @@ def show_deploy():
 
 
 @main.route('/other')
-@login_required
 def show_other():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('article_type', 'other', max_age=30*24*60*60)
