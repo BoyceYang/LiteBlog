@@ -24,9 +24,8 @@ def index():
                                                                 per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
                                                                 error_out=False)
     posts = pagination.items
-    try:
-        count = Count.query.filter_by(post_id=0).first()
-    except:
+    count = Count.query.filter_by(post_id=0).first()
+    if not count:
         count = Count(post_id=0, cnt=0)
     count.cnt += 1
     db.session.add(count)
@@ -116,9 +115,8 @@ def post(id):
     page = request.args.get('page', 1, type=int)
     pagination = Comment.query.filter_by(post_id=id,disable=False).order_by(Comment.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
     comments = pagination.items
-    try:
-        count = Count.query.filter_by(post_id=id).first()
-    except:
+    count = Count.query.filter_by(post_id=id).first()
+    if not count:
         count = Count(post_id=id, cnt=0)
     count.cnt += 1
     db.session.add(count)
