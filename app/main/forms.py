@@ -9,7 +9,7 @@ from .. import photos
 
 class PostForm(FlaskForm):
     title = StringField(validators=[DataRequired(), Length(1, 64)])
-    body = TextAreaField(validators=[DataRequired()], render_kw={"placeholder": "Loading..."})
+    body = TextAreaField(validators=[], render_kw={"placeholder": "Loading..."})
     submit = SubmitField("Submit")
 
 
