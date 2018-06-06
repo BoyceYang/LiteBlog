@@ -47,10 +47,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a href="/">Home</a>
-                </li>
-                <li >
-                    <a href="{{url_for('main.create_post')}}">New Story</a>
+                    <a href="{{url_for('main.create_post')}}">New</a>
                 </li>
             </ul>
            
@@ -75,7 +72,6 @@
                 {% else %}
                     
                     <li> <a href = "{{url_for('auth.login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign in</a> </li>
-                    <li> <a href = "{{url_for('auth.register')}}"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign up</a> </li>
                     
                 {% endif %}
             </ul>

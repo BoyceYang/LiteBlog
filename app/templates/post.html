@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros with context %}
-{% block title %}Flasky - Post{% endblock %}
+{% block title %}Flasky - {{posts[0].title}}{% endblock %}
 {% block page_content %}
 
     {% include '_posts.html' %}
@@ -22,10 +22,8 @@
     {% else %}
     <div class="discussion-timeline-actions">
         <div class="flash flash-warn mt-3">
-            <a href="{{url_for('auth.register')}}" class="btn btn-success">Sign up for free</a>
-            <strong>to comment</strong>.
-            Already have an account?
-            <a href="{{url_for('auth.login')}}" >Sign in to comment.</a> Already login? <a href="{{url_for('main.user',username='Administrator')}}" >Please contact Administrator</a>
+            Any Quest Want to Ask?
+            <a href="{{url_for('main.user',username='Administrator')}}" >Please contact Administrator</a>
         </div>
     </div>
     {% endif %}  

@@ -15,23 +15,16 @@ from flask_login import login_required
 def index():
     form = PostForm()
     page = request.args.get('page', 1, type=int)
-    show_followed = False
-    show_yours = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-        show_yours = bool(request.cookies.get('show_yours', ''))
-    if show_followed:
-        query = current_user.followed_posts
-    elif show_yours:
-        query = Post.query.filter_by(author=current_user)
+    article_type = request.cookies.get('article_type', '')
+    if article_type != '':
+        query = Post.query.filter_by(article_type=article_type)
     else:
         query = Post.query
     pagination = query.order_by(Post.timestamp.desc()).paginate(page,
                                                                 per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
                                                                 error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts, show_followed=show_followed, pagination=pagination,
-                           show_yours=show_yours)
+    return render_template('index.html', form=form, posts=posts, article_type=article_type, pagination=pagination,)
 
 
 @main.route('/admin', methods=["GET", "POST"])
@@ -111,23 +104,28 @@ def post(id):
     if current_user.can(Permission.COMMENT) and form.validate_on_submit():
         comment = Comment(body=form.body.data,author=current_user._get_current_object(),post=post)
         db.session.add(comment)
-        return redirect(url_for('main.post',id=id))
+        return redirect(url_for('main.post', id=id))
     page = request.args.get('page', 1, type=int)
     pagination = Comment.query.filter_by(post_id=id,disable=False).order_by(Comment.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
     comments = pagination.items
     return render_template("post.html", form=form,posts=[post],comments=comments,pagination=pagination,show_more=show_more)
 
 
-@main.route("/createPost", methods=["GET","POST"])
+@main.route("/createPost", methods=["GET", "POST"])
 @login_required
 def create_post():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
-        post = Post(title=form.title.data,body=form.body.data,author=current_user._get_current_object())
+        if len(form.title.data.split('|')) > 1:
+            article_type = form.title.data.split('|')[0]
+        else:
+            article_type = 'python'
+        post = Post(title=form.title.data, article_type=article_type, body=form.body.data,
+                    author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for('main.post',id=post.id))
-    return render_template("editPost.html",form=form,createPostFlag=True)
+        return redirect(url_for('main.post', id=post.id))
+    return render_template("editPost.html", form=form, createPostFlag=True)
 
 
 @main.route("/editPost/<int:id>", methods=['GET', 'POST'])
@@ -140,8 +138,12 @@ def edit_post(id):
     if form.validate_on_submit():
         post.body = form.body.data
         post.title = form.title.data
+        if len(form.title.data.split('|')) > 1:
+            post.article_type = form.title.data.split('|')[0]
+        else:
+            post.article_type = 'python'
         db.session.add(post)
-        return redirect(url_for("main.post",id=post.id))
+        return redirect(url_for("main.post", id=post.id))
     form.body.data = post.body
     form.title.data = post.title
     return render_template("editPost.html", form=form)
@@ -226,27 +228,63 @@ def followed_by(username):
 @login_required
 def show_all():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
-    resp.set_cookie('show_yours', '', max_age=30*24*60*60)
-
+    resp.set_cookie('article_type', '', max_age=30*24*60*60)
     return resp
 
 
-@main.route('/yours')
+@main.route('/python')
 @login_required
-def show_yours():
+def show_python():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_yours', '1', max_age=30*24*60*60)
-    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    resp.set_cookie('article_type', 'python', max_age=30*24*60*60)
     return resp
 
 
-@main.route('/followed')
+@main.route('/golang')
 @login_required
-def show_followed():
+def show_golang():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
-    resp.set_cookie('show_yours', '', max_age=30*24*60*60)
+    resp.set_cookie('article_type', 'golang', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/nodejs')
+@login_required
+def show_nodejs():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('article_type', 'nodejs', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/bk')
+@login_required
+def show_bk():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('article_type', 'bk', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/cloud')
+@login_required
+def show_cloud():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('article_type', 'cloud', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/deploy')
+@login_required
+def show_deploy():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('article_type', 'deploy', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/other')
+@login_required
+def show_other():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('article_type', 'other', max_age=30*24*60*60)
     return resp
 
 

@@ -19,12 +19,14 @@
 {% block page_content %}
 <div class="post-tabs">
     <ul class="nav nav-tabs">
-        <li{% if not show_followed and not show_yours  %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
-        {% if current_user.is_authenticated %}
-            <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">Following</a></li>
-            <li{% if show_yours %} class="active"{% endif %}><a href="{{ url_for('.show_yours') }}">Your Posts</a></li>
-
-        {% endif %}
+        <li{% if article_type ==''  %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
+        <li{% if article_type =='python' %} class="active"{% endif %}><a href="{{ url_for('.show_python') }}">Python</a></li>
+        <li{% if article_type =='golang' %} class="active"{% endif %}><a href="{{ url_for('.show_golang') }}">Golang</a></li>
+        <li{% if article_type =='nodejs' %} class="active"{% endif %}><a href="{{ url_for('.show_nodejs') }}">Nodejs</a></li>
+        <li{% if article_type =='bk' %} class="active"{% endif %}><a href="{{ url_for('.show_bk') }}">BlockChain</a></li>
+        <li{% if article_type =='cloud' %} class="active"{% endif %}><a href="{{ url_for('.show_cloud') }}">Cloud Compute</a></li>
+        <li{% if article_type =='deploy' %} class="active"{% endif %}><a href="{{ url_for('.show_deploy') }}">Deploy</a></li>
+        <li{% if article_type =='other' %} class="active"{% endif %}><a href="{{ url_for('.show_other') }}">Other</a></li>
     </ul>
     {% include '_posts.html' %}
 </div>

@@ -197,6 +197,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     body_html = db.Column(db.Text)
+    article_type = db.Column(db.String)
     comments = db.relationship("Comment", backref="post", lazy="dynamic")
 
 
