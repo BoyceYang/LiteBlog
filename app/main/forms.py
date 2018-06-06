@@ -6,24 +6,29 @@ from wtforms.validators import DataRequired, Email, Length, Regexp,ValidationErr
 from ..models import Role, User
 from .. import photos
 
+
 class PostForm(FlaskForm):
     title = StringField(validators=[DataRequired(),Length(1, 64)])
     body = TextAreaField(validators=[DataRequired()],render_kw = {"placeholder":"Loading..."})
     submit = SubmitField("Submit")
 
+
 class CommentForm(FlaskForm):
     body = PageDownField(validators=[DataRequired()],render_kw = {"placeholder":"Leave your comment"})
     submit = SubmitField("Comment")
 
+
 class NameForm(FlaskForm):
     name = StringField("What's your name?",validators=[DataRequired(), Email()],render_kw = {"placeholder": "Enter User Name"})
     submit = SubmitField("Submit")
+
 
 class EditProfileForm(FlaskForm):
     photo = FileField(validators=[FileAllowed(photos,"Only image supported")])
     location = StringField("Location",render_kw = {"placeholder": "Location"})
     about_me = TextAreaField("About me",render_kw = {"placeholder": "Introduce yourself"})
     submit = SubmitField("Save Changes")
+
 
 class EditProfileAdminForm(FlaskForm):
     photo = FileField(validators=[FileAllowed(photos,"Only image supported")])

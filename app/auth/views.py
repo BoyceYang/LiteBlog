@@ -6,6 +6,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from .. import db
 from ..email import send_email
 
+
 @auth.before_app_request
 def before_request():
     if current_user.is_authenticated:
@@ -13,8 +14,9 @@ def before_request():
         if not current_user.confirmed \
             and request.endpoint \
             and request.endpoint[:5] != 'auth.' \
-            and request.endpoint != 'static':
+                and request.endpoint != 'static':
             return redirect(url_for('auth.unconfirmed'))
+
 
 @auth.route('/unconfirmed')
 def unconfirmed():
@@ -22,7 +24,8 @@ def unconfirmed():
         return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
 
-@auth.route("/login",  methods=["GET","POST"])
+
+@auth.route("/login",  methods=["GET", "POST"])
 def login():
     loginError = None
     if current_user.is_authenticated:
@@ -36,6 +39,7 @@ def login():
         loginError="Invalid emial or password"
     return render_template("auth/login.html", form=form,loginError=loginError)
 
+
 @auth.route("/logout", methods=["GET","POST"])
 @login_required
 def logout():
@@ -43,7 +47,8 @@ def logout():
     flash("You has been logged out.")
     return redirect(url_for("auth.login"))
 
-@auth.route("/register",  methods=["GET","POST"])
+
+@auth.route("/register",  methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
@@ -53,12 +58,13 @@ def register():
         db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
-        send_email(user.email, "Confirm Your Account", "auth/email/confirm",user=user,token=token)
+        send_email(user.email, "Confirm Your Account", "auth/email/confirm", user=user, token=token)
         flash("A confirmation email has been sent to your email")
         return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form)
 
-@auth.route("/confirm/<token>",  methods=["GET","POST"])
+
+@auth.route("/confirm/<token>",  methods=["GET", "POST"])
 @login_required
 def confirm(token):
     if current_user.confirmed:
@@ -69,7 +75,8 @@ def confirm(token):
         flash("The confirmation link is invalid or has expired")
     return redirect(url_for("main.index"))
 
-@auth.route("/confirm",  methods=["GET","POST"])
+
+@auth.route("/confirm",  methods=["GET", "POST"])
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
@@ -89,6 +96,7 @@ def change_password():
         return redirect(url_for("main.index"))
     return render_template("auth/changePassword.html", form=form)
 
+
 @auth.route("/forgetPasswordRequest",  methods=["GET","POST"])
 def forget_password_request():
     form = forgetPasswordRequestForm()
@@ -99,6 +107,7 @@ def forget_password_request():
             send_email(user.email, "Reset Your password", "auth/email/resetPassword",user=user,token=token)
         return render_template('auth/forgetPassswordNotificationMessage.html',email=form.email.data)
     return render_template("auth/forgetPasswordRequest.html", form=form)
+
 
 @auth.route("/resetPassword/<token>",  methods=["GET","POST"])
 def reset_password(token):

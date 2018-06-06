@@ -20,6 +20,7 @@ pagedown = PageDown()
 login_manager.session_protection = "basic"
 login_manager.login_view = "auth.login"
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -35,6 +36,6 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
-    configure_uploads(app,photos)
+    configure_uploads(app, photos)
     patch_request_class(app)
     return app

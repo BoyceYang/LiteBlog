@@ -36,6 +36,16 @@
                             </a>
                         {% endif %}
 
+                        {% if current_user == post.author %}
+                            <a class="post-edit" href="{{ url_for('main.del_post', id=post.id) }}">
+                                <span class="label label-primary">Del</span>
+                            </a>
+                        {% elif current_user.is_administrator()%}
+                            <a class="post-edit admin" href="{{ url_for('main.del_post', id=post.id) }}">
+                                <span class="label label-danger">Del [Admin]</span>
+                            </a>
+                        {% endif %}
+
                         <a class="post-comment" href ="{{ url_for('main.post', id=post.id)}}#comments">
                             <span class="label label-primary">{{post.comments.filter_by(disable=False).count()}} comments</span>
                         </a>

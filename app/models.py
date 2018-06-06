@@ -9,8 +9,9 @@ from . import photos
 from markdown import markdown
 import bleach
 
+
 class Role(db.Model):
-    __tablename__="roles"
+    __tablename__ = "roles"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64),unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
@@ -35,12 +36,14 @@ class Role(db.Model):
             role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
-        
+
+
 class Follow(db.Model):
     __tablename__ = 'follows'
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class User(UserMixin, db.Model):
     __tablename__="users"
@@ -163,6 +166,7 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return "<User> %r"%self.username
 
+
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
@@ -195,6 +199,7 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     comments = db.relationship("Comment", backref="post", lazy="dynamic")
 
+
 class Permission:
     FOLLOW = 0x01
     COMMENT = 0x02
@@ -202,12 +207,14 @@ class Permission:
     MODERATE_COMMENTS = 0x08
     ADMINISTER = 0x80
 
+
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
         return False
     def is_administrator(self):
         return False
 login_manager.anonymous_user = AnonymousUser
+
 
 @login_manager.user_loader
 def load_user(user_id):
