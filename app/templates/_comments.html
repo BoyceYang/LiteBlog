@@ -21,6 +21,7 @@
                                 {% else %}
                                     <a class="btn btn-primary" href='{{url_for("main.enable_comment",id=comment.id,page=pagination.page)}}'>Enable</a>
                                 {% endif %}
+                                <a class="btn btn-danger" href='{{url_for("main.del_comment",id=comment.id, page=pagination.page)}}'>Del</a>
                             </div>
                         {% endif %}
                         </div>

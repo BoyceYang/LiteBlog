@@ -250,12 +250,13 @@ def show_followed():
     return resp
 
 
-@main.route("/moderate-comments", methods=["GET","POST"])
+@main.route("/moderate-comments", methods=["GET", "POST"])
 @permission_required(Permission.MODERATE_COMMENTS)
 @login_required
 def moderate_comments():
     page = request.args.get('page', 1, type=int)
-    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+    pagination = Comment.query.order_by(Comment.timestamp.desc())\
+        .paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
     comments = pagination.items
     return render_template('comments.html', pagination=pagination,comments=comments)
 
@@ -270,7 +271,7 @@ def disable_comment(id):
     return redirect(url_for("main.moderate_comments", page=request.args.get('page', 1, type=int)))
 
 
-@main.route("/enable-comment/<int:id>", methods=["GET","POST"])
+@main.route("/enable-comment/<int:id>", methods=["GET", "POST"])
 @permission_required(Permission.MODERATE_COMMENTS)
 @login_required
 def enable_comment(id):
@@ -278,3 +279,14 @@ def enable_comment(id):
     comment.disable = False
     db.session.add(comment)
     return redirect(url_for("main.moderate_comments", page=request.args.get('page', 1, type=int)))
+
+
+@main.route("/del-comment/<int:id>", methods=["GET", "POST"])
+@permission_required(Permission.MODERATE_COMMENTS)
+@login_required
+def del_comment(id):
+    comment = Comment.query.get_or_404(id)
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for("main.moderate_comments", page=request.args.get('page', 1, type=int)))
+
