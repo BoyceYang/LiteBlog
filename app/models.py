@@ -220,3 +220,10 @@ login_manager.anonymous_user = AnonymousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+class Count(db.Model):
+    __tablename__ = "counts"
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer)
+    cnt = db.Column(db.Integer)

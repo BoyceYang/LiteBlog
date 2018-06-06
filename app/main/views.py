@@ -4,7 +4,7 @@ from flask_login import current_user
 from . import main
 from .forms import PostForm, EditProfileForm,EditProfileAdminForm, CommentForm
 from .. import db, photos
-from ..models import User, Role, Post, Comment
+from ..models import User, Role, Post, Comment, Count
 from ..email import send_email
 from ..decorators import admin_required, permission_required
 from ..models import Permission
@@ -24,7 +24,15 @@ def index():
                                                                 per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
                                                                 error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts, article_type=article_type, pagination=pagination,)
+    try:
+        count = Count.query.filter_by(post_id=0).first()
+    except:
+        count = Count(post_id=0, cnt=0)
+    count.cnt += 1
+    db.session.add(count)
+    db.session.commit()
+    return render_template('index.html', form=form, posts=posts, article_type=article_type, pagination=pagination,
+                           cnt=count.cnt)
 
 
 @main.route('/admin', methods=["GET", "POST"])
@@ -108,7 +116,15 @@ def post(id):
     page = request.args.get('page', 1, type=int)
     pagination = Comment.query.filter_by(post_id=id,disable=False).order_by(Comment.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
     comments = pagination.items
-    return render_template("post.html", form=form,posts=[post],comments=comments,pagination=pagination,show_more=show_more)
+    try:
+        count = Count.query.filter_by(post_id=id).first()
+    except:
+        count = Count(post_id=id, cnt=0)
+    count.cnt += 1
+    db.session.add(count)
+    db.session.commit()
+    return render_template("post.html", form=form, posts=[post], comments=comments, pagination=pagination,
+                           show_more=show_more, post_cnt=count.cnt)
 
 
 @main.route("/createPost", methods=["GET", "POST"])

@@ -49,6 +49,9 @@
                         <a class="post-comment" href ="{{ url_for('main.post', id=post.id)}}#comments">
                             <span class="label label-primary">{{post.comments.filter_by(disable=False).count()}} comments</span>
                         </a>
+                        <a class="post-comment" href ="#">
+                            <span class="label label-primary">{{ post_cnt }}</span>
+                        </a>
                     </div>
                 </div>
             </div>
